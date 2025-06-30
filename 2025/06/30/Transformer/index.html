@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>深度学习核心模块浅谈（CNN、DNN、RNN、Transformer） | 多读几年书....</title><meta name="author" content="李凯"><meta name="copyright" content="李凯"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1. 简述 CNN1.1 卷积核的特征提取卷积神经网络（Convolutional Neural Network，CNN）本质上是对图像应用卷积核（也叫滤波器），通过滑动一个小矩阵在图像上对局部像素进行加权求和，从而提取局部特征，如边缘、角点、纹理等，最终生成特征图。 ❓ 卷积核为什么能够提取边缘、角点、纹理？因为这些区域在像素值上具有显著变化，卷积操作正是用于检测图像中这种局部变化模式（patt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）">
+<meta property="og:url" content="http://example.com/2025/06/30/Transformer/index.html">
+<meta property="og:site_name" content="多读几年书....">
+<meta property="og:description" content="1. 简述 CNN1.1 卷积核的特征提取卷积神经网络（Convolutional Neural Network，CNN）本质上是对图像应用卷积核（也叫滤波器），通过滑动一个小矩阵在图像上对局部像素进行加权求和，从而提取局部特征，如边缘、角点、纹理等，最终生成特征图。 ❓ 卷积核为什么能够提取边缘、角点、纹理？因为这些区域在像素值上具有显著变化，卷积操作正是用于检测图像中这种局部变化模式（patt">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/4.jpg">
+<meta property="article:published_time" content="2025-06-30T02:30:00.000Z">
+<meta property="article:modified_time" content="2025-06-30T13:51:47.102Z">
+<meta property="article:author" content="李凯">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="神经网络">
+<meta property="article:tag" content="Transformer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/4.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）",
+  "url": "http://example.com/2025/06/30/Transformer/",
+  "image": "http://example.com/img/4.jpg",
+  "datePublished": "2025-06-30T02:30:00.000Z",
+  "dateModified": "2025-06-30T13:51:47.102Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李凯",
+      "url": "http://example.com/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/06/30/Transformer/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/default_top_img.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/vater.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/img/4.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/sichuan.png" alt="Logo"><span class="site-name">多读几年书....</span></a><a class="nav-page-title" href="/"><span class="site-name">深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T02:30:00.000Z" title="发表于 2025-06-30 10:30:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-30T13:51:47.102Z" title="更新于 2025-06-30 21:51:47">2025-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="1-简述-CNN"><a href="#1-简述-CNN" class="headerlink" title="1. 简述 CNN"></a>1. 简述 CNN</h2><h3 id="1-1-卷积核的特征提取"><a href="#1-1-卷积核的特征提取" class="headerlink" title="1.1 卷积核的特征提取"></a>1.1 卷积核的特征提取</h3><p>卷积神经网络（Convolutional Neural Network，CNN）本质上是对图像应用卷积核（也叫滤波器），通过滑动一个小矩阵在图像上对局部像素进行加权求和，从而提取局部特征，如边缘、角点、纹理等，最终生成特征图。</p>
+<h4 id="❓-卷积核为什么能够提取边缘、角点、纹理？"><a href="#❓-卷积核为什么能够提取边缘、角点、纹理？" class="headerlink" title="❓ 卷积核为什么能够提取边缘、角点、纹理？"></a>❓ 卷积核为什么能够提取边缘、角点、纹理？</h4><p>因为这些区域在像素值上具有显著变化，卷积操作正是用于检测图像中这种局部变化模式（pattern），比如经典的边缘检测卷积核（如 Sobel、Prewitt）。例如，一个用于提取上下边缘的卷积核如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[-1, -1, -1]</span><br><span class="line">[ 0, 0, 0]</span><br><span class="line">[ 1, 1, 1]</span><br></pre></td></tr></table></figure>
+
+<p>在边缘区域响应强，平滑区域响应弱，自然实现了特征提取。而在 CNN 中，卷积核的权重不是手动设定的，而是通过以下过程自动学习得到：</p>
+<ul>
+<li>损失函数（Loss Function）</li>
+<li>反向传播（Backpropagation）</li>
+<li>梯度下降（Gradient Descent）</li>
+</ul>
+<blockquote>
+<p>CNN 能够从简单边缘逐层构建出复杂的特征表示系统，这是其强大的根本原因。</p>
+</blockquote>
+<hr>
+<h3 id="1-2-特征图大小计算"><a href="#1-2-特征图大小计算" class="headerlink" title="1.2 特征图大小计算"></a>1.2 特征图大小计算</h3><p>给定输入尺寸 ( N &#x3D; 30 )，卷积核尺寸 ( K &#x3D; 3 )，填充 ( P &#x3D; 1 )，步长 ( S &#x3D; 1 )，输出尺寸公式为：</p>
+<p>[<br>O &#x3D; \frac{N + 2P - K}{S} + 1 &#x3D; \frac{30 + 2×1 - 3}{1} + 1 &#x3D; 30<br>]</p>
+<ul>
+<li><strong>Padding</strong>：用于保持特征图尺寸不变，避免边缘信息丢失。</li>
+<li><strong>Stride</strong>：影响特征提取密度，S&#x3D;1 保留更多细节，S&gt;1 可压缩特征。</li>
+</ul>
+<hr>
+<h2 id="2-简述-DNN"><a href="#2-简述-DNN" class="headerlink" title="2. 简述 DNN"></a>2. 简述 DNN</h2><p>DNN（Deep Neural Network）是由多个全连接层（Fully Connected Layers）堆叠而成的深度网络，也称为 MLP（Multi-Layer Perceptron）或前馈神经网络。</p>
+<h3 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h3><ul>
+<li>参数量大，容易过拟合。</li>
+<li>输入需展平（Flatten），会丢失图像的空间位置信息。</li>
+<li>每个神经元与上一层所有神经元相连，每条连接有独立权重。</li>
+</ul>
+<hr>
+<h2 id="3-简述-RNN"><a href="#3-简述-RNN" class="headerlink" title="3. 简述 RNN"></a>3. 简述 RNN</h2><p>RNN（Recurrent Neural Network）是一种适用于序列数据的神经网络，其输出不仅依赖于当前输入，还与前一个状态相关。结构如下：</p>
+<p>[<br>h_t &#x3D; f(Wx_t + Uh_{t-1})<br>]</p>
+<p>适用于文本、语音、时间序列等时序数据建模任务。</p>
+<hr>
+<h2 id="4-Transformer-模块问题搜集（针对-NLP）"><a href="#4-Transformer-模块问题搜集（针对-NLP）" class="headerlink" title="4. Transformer 模块问题搜集（针对 NLP）"></a>4. Transformer 模块问题搜集（针对 NLP）</h2><p>Transformer 采用全注意力机制处理序列，基本编码流程如下：</p>
+<p>输入句子 → 词向量矩阵 → 位置编码 → 多头注意力 → 残差连接 → 前馈网络 → LayerNorm → …</p>
+<hr>
+<h3 id="❓-问题-3：位置编码是如何加入词向量的？"><a href="#❓-问题-3：位置编码是如何加入词向量的？" class="headerlink" title="❓ 问题 3：位置编码是如何加入词向量的？"></a>❓ 问题 3：位置编码是如何加入词向量的？</h3><p>假设词向量矩阵大小为 ( 3 × d )，位置编码矩阵同样为 ( 3 × d )，它们通过<strong>逐元素相加</strong>完成融合：</p>
+<p>[<br>\text{Input} &#x3D; \text{WordEmbedding} + \text{PositionalEncoding}<br>]</p>
+<p>好处：</p>
+<ul>
+<li>保持维度不变，便于后续注意力机制处理；</li>
+<li>不破坏语义空间结构；</li>
+<li>有利于训练收敛和稳定性。</li>
+</ul>
+<hr>
+<h3 id="❓-问题-4：为什么位置编码直接相加就能引入有效的位置信息？"><a href="#❓-问题-4：为什么位置编码直接相加就能引入有效的位置信息？" class="headerlink" title="❓ 问题 4：为什么位置编码直接相加就能引入有效的位置信息？"></a>❓ 问题 4：为什么位置编码直接相加就能引入有效的位置信息？</h3><p>位置编码使用如下函数构造：</p>
+<p>[<br>PE_{(pos, 2i)} &#x3D; \sin\left(\frac{pos}{10000^{2i&#x2F;d}}\right), \quad<br>PE_{(pos, 2i+1)} &#x3D; \cos\left(\frac{pos}{10000^{2i&#x2F;d}}\right)<br>]</p>
+<p>它的优势在于：</p>
+<ul>
+<li>周期性强，能反映词与词之间的相对距离；</li>
+<li>连续可微，便于梯度传递；</li>
+<li>训练中能自然融合进注意力机制进行学习。</li>
+</ul>
+<hr>
+<h3 id="❓-问题-5：能否不使用函数编码，而是直接用-index-序列进行学习？"><a href="#❓-问题-5：能否不使用函数编码，而是直接用-index-序列进行学习？" class="headerlink" title="❓ 问题 5：能否不使用函数编码，而是直接用 index 序列进行学习？"></a>❓ 问题 5：能否不使用函数编码，而是直接用 index 序列进行学习？</h3><p>是的，这就是 <strong>Learnable Positional Embedding</strong>：</p>
+<ul>
+<li>将每个位置 index 映射为一个向量，类似词嵌入；</li>
+<li>可以让模型学习哪些位置更重要；</li>
+<li>GPT、BERT 等现代模型默认使用此方法；</li>
+<li>仍采用相加方式融合：</li>
+</ul>
+<p>[<br>\text{Input} &#x3D; \text{Embedding} + \text{LearnedPosEncoding}<br>]</p>
+<hr>
+<h3 id="❓-问题-6：FFN-是-MLP，它忽略空间位置吗？怎么处理整个矩阵？"><a href="#❓-问题-6：FFN-是-MLP，它忽略空间位置吗？怎么处理整个矩阵？" class="headerlink" title="❓ 问题 6：FFN 是 MLP，它忽略空间位置吗？怎么处理整个矩阵？"></a>❓ 问题 6：FFN 是 MLP，它忽略空间位置吗？怎么处理整个矩阵？</h3><p>Transformer 中的 FFN 作用如下：</p>
+<ul>
+<li>对<strong>每一个词向量（矩阵的一行）单独处理</strong>，保持序列结构不变；</li>
+<li>因为位置编码已嵌入词向量中，故位置顺序信息仍被保留；</li>
+<li>实际上，相当于对每一行做相同的 MLP 操作。</li>
+</ul>
+<hr>
+<h3 id="❓-问题-7：能否把-FFN-融进注意力机制中，提升表达能力？"><a href="#❓-问题-7：能否把-FFN-融进注意力机制中，提升表达能力？" class="headerlink" title="❓ 问题 7：能否把 FFN 融进注意力机制中，提升表达能力？"></a>❓ 问题 7：能否把 FFN 融进注意力机制中，提升表达能力？</h3><p>可以，这就是 Gated Attention Unit（GAU）等结构的初衷：</p>
+<ul>
+<li>将非线性处理嵌入到 attention 权重和值计算过程中；</li>
+<li>实现边“关注”边“加工”的效果；</li>
+<li>能提升模型效率和表达力，在复杂任务中表现优异。</li>
+</ul>
+<hr>
+<blockquote>
+<p>🧠 这些问题和回答源于我在学习过程中的真实疑问，希望也能帮助正在学习深度学习的你。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">李凯</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/06/30/Transformer/">http://example.com/2025/06/30/Transformer/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">多读几年书....</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><a class="post-meta__tags" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">神经网络</a><a class="post-meta__tags" href="/tags/Transformer/">Transformer</a></div><div class="post-share"><div class="social-share" data-image="/img/4.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/06/28/hello-world/" title="Hello World"><img class="cover" src="/img/6.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Hello World</div></div><div class="info-2"><div class="info-item-1">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;  More info: Writing Run server1$ hexo server  More info: Server Generate static files1$ hexo generate  More info: Generating Deploy to remote sites1$ hexo deploy  More info: Deployment </div></div></div></a><a class="pagination-related" href="/2025/06/30/ALM/" title="ALM优化"><img class="cover" src="/img/8.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">ALM优化</div></div><div class="info-2"><div class="info-item-1">1. ALM算法ALM是一种聪明的“解决条件下最优答案”的数学方法，当我们不能随便优化（比如受限制），它能帮我们找到既满足条件又最好的方案，并用于恢复模糊照片、重建医学图像、分离视频背景、压缩感知等场景，以求达到自动、稳定、数学严谨，计算机容易做的目的。 本文将从拉格朗日函数法(Lagrangian Multipliers)讲起，逐步过渡到增广拉格朗日函数法(ALM)，最后讲解ALM优化算法，包括：ADMM算法、AMA算法，并进行四种算法的总结比较。 1.1 拉格朗日函数法在讲解LM之前，可以回顾高中是否学习过带约束的最优化问题，高中常见的做法是将约束条件进行变量代换，然后带入需求解边界的函数，接着对函数求导，寻找边界极值，进而确定此方程组当中最优化解。 由此可见，高中的求解方式依赖 变量代换，但是在较为复杂的问题当中（如：多变量，多约束），可能无法进行有效的变量代换，此时需要更加普适的求解方式，那就是...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/vater.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李凯</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/HUFT-KAI-LI" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:2747448924@qq.com" target="_blank" title="QQ邮箱"><i class="fas fa-envelope" style="color: #d14836;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%AE%80%E8%BF%B0-CNN"><span class="toc-number">1.</span> <span class="toc-text">1. 简述 CNN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%8D%B7%E7%A7%AF%E6%A0%B8%E7%9A%84%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 卷积核的特征提取</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9D%93-%E5%8D%B7%E7%A7%AF%E6%A0%B8%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E5%A4%9F%E6%8F%90%E5%8F%96%E8%BE%B9%E7%BC%98%E3%80%81%E8%A7%92%E7%82%B9%E3%80%81%E7%BA%B9%E7%90%86%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">❓ 卷积核为什么能够提取边缘、角点、纹理？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%89%B9%E5%BE%81%E5%9B%BE%E5%A4%A7%E5%B0%8F%E8%AE%A1%E7%AE%97"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 特征图大小计算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%AE%80%E8%BF%B0-DNN"><span class="toc-number">2.</span> <span class="toc-text">2. 简述 DNN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">特点：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%AE%80%E8%BF%B0-RNN"><span class="toc-number">3.</span> <span class="toc-text">3. 简述 RNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Transformer-%E6%A8%A1%E5%9D%97%E9%97%AE%E9%A2%98%E6%90%9C%E9%9B%86%EF%BC%88%E9%92%88%E5%AF%B9-NLP%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">4. Transformer 模块问题搜集（针对 NLP）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%93-%E9%97%AE%E9%A2%98-3%EF%BC%9A%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%E6%98%AF%E5%A6%82%E4%BD%95%E5%8A%A0%E5%85%A5%E8%AF%8D%E5%90%91%E9%87%8F%E7%9A%84%EF%BC%9F"><span class="toc-number">4.1.</span> <span class="toc-text">❓ 问题 3：位置编码是如何加入词向量的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%93-%E9%97%AE%E9%A2%98-4%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%E7%9B%B4%E6%8E%A5%E7%9B%B8%E5%8A%A0%E5%B0%B1%E8%83%BD%E5%BC%95%E5%85%A5%E6%9C%89%E6%95%88%E7%9A%84%E4%BD%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%EF%BC%9F"><span class="toc-number">4.2.</span> <span class="toc-text">❓ 问题 4：为什么位置编码直接相加就能引入有效的位置信息？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%93-%E9%97%AE%E9%A2%98-5%EF%BC%9A%E8%83%BD%E5%90%A6%E4%B8%8D%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0%E7%BC%96%E7%A0%81%EF%BC%8C%E8%80%8C%E6%98%AF%E7%9B%B4%E6%8E%A5%E7%94%A8-index-%E5%BA%8F%E5%88%97%E8%BF%9B%E8%A1%8C%E5%AD%A6%E4%B9%A0%EF%BC%9F"><span class="toc-number">4.3.</span> <span class="toc-text">❓ 问题 5：能否不使用函数编码，而是直接用 index 序列进行学习？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%93-%E9%97%AE%E9%A2%98-6%EF%BC%9AFFN-%E6%98%AF-MLP%EF%BC%8C%E5%AE%83%E5%BF%BD%E7%95%A5%E7%A9%BA%E9%97%B4%E4%BD%8D%E7%BD%AE%E5%90%97%EF%BC%9F%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86%E6%95%B4%E4%B8%AA%E7%9F%A9%E9%98%B5%EF%BC%9F"><span class="toc-number">4.4.</span> <span class="toc-text">❓ 问题 6：FFN 是 MLP，它忽略空间位置吗？怎么处理整个矩阵？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9D%93-%E9%97%AE%E9%A2%98-7%EF%BC%9A%E8%83%BD%E5%90%A6%E6%8A%8A-FFN-%E8%9E%8D%E8%BF%9B%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E4%B8%AD%EF%BC%8C%E6%8F%90%E5%8D%87%E8%A1%A8%E8%BE%BE%E8%83%BD%E5%8A%9B%EF%BC%9F"><span class="toc-number">4.5.</span> <span class="toc-text">❓ 问题 7：能否把 FFN 融进注意力机制中，提升表达能力？</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/06/30/ALM/" title="ALM优化"><img src="/img/8.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ALM优化"/></a><div class="content"><a class="title" href="/2025/06/30/ALM/" title="ALM优化">ALM优化</a><time datetime="2025-06-30T13:54:00.000Z" title="发表于 2025-06-30 21:54:00">2025-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/30/Transformer/" title="深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）"><img src="/img/4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）"/></a><div class="content"><a class="title" href="/2025/06/30/Transformer/" title="深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）">深度学习核心模块浅谈（CNN、DNN、RNN、Transformer）</a><time datetime="2025-06-30T02:30:00.000Z" title="发表于 2025-06-30 10:30:00">2025-06-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/28/hello-world/" title="Hello World"><img src="/img/6.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2025/06/28/hello-world/" title="Hello World">Hello World</a><time datetime="2025-06-28T09:05:04.775Z" title="发表于 2025-06-28 17:05:04">2025-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/28/google/" title="Google账号注册"><img src="/img/7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Google账号注册"/></a><div class="content"><a class="title" href="/2025/06/28/google/" title="Google账号注册">Google账号注册</a><time datetime="2025-06-27T16:00:00.000Z" title="发表于 2025-06-28 00:00:00">2025-06-28</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/footer_img.jpg);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By 李凯</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
